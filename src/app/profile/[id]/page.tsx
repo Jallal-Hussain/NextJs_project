@@ -18,7 +18,7 @@ const UserProfile = ({ params }: UserProfileProps) => {
             User Profile
           </h2>
           <div className="mb-4">
-            <p className="text-gray-600 font-medium">Username:</p>
+            <p className="text-gray-600 font-medium">User Id</p>
             <p className="text-gray-800">{params.id}</p>
           </div>
           <div className="mb-4">
