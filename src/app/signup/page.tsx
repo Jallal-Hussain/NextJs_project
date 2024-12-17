@@ -5,7 +5,12 @@ import Head from "next/head";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import axios from "axios";
-import toast from "react-hot-toast";
+import {
+  showSuccessToast,
+  showErrorToast,
+  showLoadingToast,
+  dismissToast,
+} from "@/helpers/toast";
 
 export default function SignUpPage() {
   const router = useRouter();
@@ -15,7 +20,6 @@ export default function SignUpPage() {
     username: "",
   });
   const [buttonDisabled, setButtonDisabled] = useState(true);
-  const [loading, setLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -26,17 +30,20 @@ export default function SignUpPage() {
     e.preventDefault();
     if (buttonDisabled) return;
 
+    const toastId = showLoadingToast("Signing up..."); // Show loading toast
     try {
-      setLoading(true);
       const response = await axios.post("/api/users/signup", user);
       console.log("Signup Success", response.data);
-      toast.success("Signup successful! Redirecting to login...");
-      router.push("/login");
+      showSuccessToast("Signup successful! Redirecting to login...");
+      setTimeout(() => {
+        router.push("/login");
+      }, 3000); // Redirect after a delay
     } catch (error: any) {
       console.error("Signup Failed", error.message);
-      toast.error(error.response?.data?.message || "Signup failed. Try again.");
+      const errorMessage = error.response?.data?.message || "Signup failed";
+      showErrorToast(errorMessage);
     } finally {
-      setLoading(false);
+      dismissToast(toastId); // Dismiss the loading toast
     }
   };
 
@@ -57,7 +64,7 @@ export default function SignUpPage() {
       <div className="flex justify-center items-center min-h-screen bg-gray-100">
         <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
           <h2 className="text-2xl font-bold mb-6 text-center text-gray-700">
-            {loading ? "Please wait..." : "Signup"}
+            Signup
           </h2>
           <form onSubmit={onSignUp}>
             <div className="mb-4">
@@ -123,7 +130,7 @@ export default function SignUpPage() {
               }`}
               disabled={buttonDisabled}
             >
-              {loading ? "Signing up..." : "Sign up"}
+              Sign up
             </button>
           </form>
           <div className="mt-4 text-center">
