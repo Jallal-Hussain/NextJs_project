@@ -10,12 +10,12 @@ export const sendEmail = async ({ email, emailType, userId }: any) => {
     if (emailType === "VERIFY") {
       await User.findByIdAndUpdate(userId, {
         verifyToken: hashedToken,
-        verifyTokenExpiry: Date.now() + 3600000
+        verifyTokenExpiry: Date.now() + 3600000,
       });
     } else if (emailType === "RESET") {
       await User.findByIdAndUpdate(userId, {
         forgotPasswordToken: hashedToken,
-        forgotPasswordTokenExpiry: Date.now() + 3600000 
+        forgotPasswordTokenExpiry: Date.now() + 3600000,
       });
     }
     // create transport
@@ -34,18 +34,20 @@ export const sendEmail = async ({ email, emailType, userId }: any) => {
       subject:
         emailType === "VERIFY" ? "Verify your email" : "Reset your password",
       html: `
-    <p>
-      Click 
-      <a href="${process.env.DOMAIN}/verifyemail?token=${hashedToken}">
-        here
-      </a> 
-      to ${
-        emailType === "VERIFY" ? "verify your email" : "reset your password"
-      } 
-      or copy and paste the following link into your browser: 
-      <br /> ${process.env.DOMAIN}/verifyemail?token=${hashedToken}
-    </p>
-  `,
+  <p>
+    Click 
+    <a href="${process.env.DOMAIN}/${
+        emailType === "VERIFY" ? "verifyemail" : "reset-password"
+      }?token=${hashedToken}">
+      here
+    </a> 
+    to ${emailType === "VERIFY" ? "verify your email" : "reset your password"} 
+    or copy and paste the following link into your browser: 
+    <br /> ${process.env.DOMAIN}/${
+        emailType === "VERIFY" ? "verifyemail" : "reset-password"
+      }?token=${hashedToken}
+  </p>
+`,
     };
     // send email
     const mailresponse = await transport.sendMail(mailOptions);
