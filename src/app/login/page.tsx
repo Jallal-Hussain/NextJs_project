@@ -34,8 +34,8 @@ function LoginPage() {
       console.log("Login Success", response.data);
       toast.success("Signup successful! Redirecting to login...");
       router.push("/profile");
-    } catch (err) {
-      setError("An error occurred while logging in. Please try again.");
+    } catch (error: any) {
+      setError("An error occurred while logging in. Please try again." + error);
     } finally {
       setLoading(false);
     }
@@ -110,12 +110,19 @@ function LoginPage() {
             </button>
             {error && <p className="mt-4 text-center text-red-500">{error}</p>}
           </form>
-          <p className="mt-4 text-center text-gray-600">
-            Not registered yet?{" "}
-            <Link href="/signup" className="text-blue-500 hover:underline">
-              Create an account
-            </Link>
-          </p>
+          <div className="mb-4 text-sm font-sans ">
+            <p className="mt-4 text-gray-600">
+              <Link href="/forgot-password" className="text-blue-500 hover:underline">
+                Forgot-password? &nbsp;
+              </Link>
+            </p>
+            <p className="mt-4 text-center text-gray-600">
+              Not registered yet?{" "}
+              <Link href="/signup" className="text-blue-500 hover:underline">
+                Create an account
+              </Link>
+            </p>
+          </div>
         </div>
       </div>
     </>
