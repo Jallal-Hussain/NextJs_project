@@ -5,7 +5,12 @@ import Head from "next/head";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import Link from "next/link";
-import toast from "react-hot-toast";
+import {
+  showSuccessToast,
+  showErrorToast,
+  showLoadingToast,
+  dismissToast,
+} from "@/helpers/toast";
 
 function LoginPage() {
   const router = useRouter();
@@ -15,7 +20,6 @@ function LoginPage() {
   });
 
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
   const [buttonDisabled, setButtonDisabled] = useState(true);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -26,18 +30,19 @@ function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (buttonDisabled) return;
-    setLoading(true);
+
     setError(null); // Reset error state on new attempt
+    const toastId = showLoadingToast("Logging in..."); // Show loading toast
     try {
-      setLoading(true);
       const response = await axios.post("/api/users/login", user);
       console.log("Login Success", response.data);
-      toast.success("Signup successful! Redirecting to login...");
-      router.push("/profile");
+      showSuccessToast("Login successful!");
+      router.push("/profile"); // Navigate to the profile page
     } catch (error: any) {
-      setError("An error occurred while logging in. Please try again." + error);
+      const errorMessage = error.response?.data?.message || "Login failed";
+      showErrorToast(errorMessage);
     } finally {
-      setLoading(false);
+      dismissToast(toastId); // Dismiss the loading toast
     }
   };
 
@@ -99,20 +104,22 @@ function LoginPage() {
             </div>
             <button
               type="submit"
-              disabled={loading}
+              disabled={buttonDisabled}
               className={`w-full py-2 px-4 rounded-lg text-white transition duration-300 ${
-                loading
+                buttonDisabled
                   ? "bg-gray-400 cursor-not-allowed"
                   : "bg-blue-500 hover:bg-blue-600"
               }`}
             >
-              {loading ? "Logging in..." : "Login"}
+              Login
             </button>
-            {error && <p className="mt-4 text-center text-red-500">{error}</p>}
           </form>
           <div className="mb-4 text-sm font-sans ">
             <p className="mt-4 text-gray-600">
-              <Link href="/forgot-password" className="text-blue-500 hover:underline">
+              <Link
+                href="/forgot-password"
+                className="text-blue-500 hover:underline"
+              >
                 Forgot-password? &nbsp;
               </Link>
             </p>

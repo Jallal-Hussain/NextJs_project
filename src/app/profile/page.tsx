@@ -10,6 +10,8 @@ import Link from "next/link";
 export default function ProfilePage() {
   const router = useRouter();
   const [data, setData] = useState("");
+
+  // Logout function
   const logout = async () => {
     try {
       await axios.get("/api/users/logout");
@@ -21,12 +23,17 @@ export default function ProfilePage() {
     }
   };
 
-  // Get user details
+  // Get user details (user ID)
   const getUserDetails = async () => {
-    const response = await axios.get("/api/users/me");
-    console.log("Data:", response.data);
-    setData(response.data.data._id);
+    try {
+      const response = await axios.get("/api/users/me");
+      console.log("Data:", response.data);
+      setData(response.data.data._id); // Store the user ID
+    } catch (error: any) {
+      toast.error("Failed to fetch user details.");
+    }
   };
+
   return (
     <>
       <Head>
@@ -44,18 +51,22 @@ export default function ProfilePage() {
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           onClick={getUserDetails}
         >
-          get user Id
+          Get User ID
         </button>
+
         <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
           <h2 className="text-2xl font-bold mb-6 text-center text-gray-700">
             General Profile Page
           </h2>
         </div>
+
         <h2 className="p-4 bg-green-800 text-2xl rounded font-bold mb-6 text-center text-white">
           {data === "" ? (
-            "Id not Found"
+            "ID not Found"
           ) : (
-            <Link href={`/profile/${data}`}>{data}</Link>
+            <Link href={`/profile/${data}`} className="text-white">
+              {data}
+            </Link>
           )}
         </h2>
       </div>
