@@ -58,10 +58,7 @@ const UserProfile = ({ params }: UserProfileProps) => {
             <p className="text-red-600 text-center">{error}</p>
           ) : user ? (
             <>
-              <div className="mb-4">
-                <p className="text-gray-600 font-medium">User ID:</p>
-                <p className="text-gray-800">{user._id}</p>
-              </div>
+              {" "}
               <div className="mb-4">
                 <p className="text-gray-600 font-medium">Username:</p>
                 <p className="text-gray-800">{user.username}</p>
@@ -71,10 +68,8 @@ const UserProfile = ({ params }: UserProfileProps) => {
                 <p className="text-gray-800">{user.email}</p>
               </div>
               <div className="mb-4">
-                <p className="text-gray-600 font-medium">Joined:</p>
-                <p className="text-gray-800">
-                  {new Date(user.createdAt).toLocaleDateString()}
-                </p>
+                <p className="text-gray-600 font-medium">User ID:</p>
+                <p className="text-gray-800">{user._id}</p>
               </div>
             </>
           ) : (
